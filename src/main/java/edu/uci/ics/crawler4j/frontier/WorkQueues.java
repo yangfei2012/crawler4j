@@ -68,7 +68,7 @@ public class WorkQueues {
 				cursor = urlsDB.openCursor(txn, null);
 				result = cursor.getFirst(key, value, null);
 
-				while (matches < max && result == OperationStatus.SUCCESS) {
+				while (matches<max && result==OperationStatus.SUCCESS) {
 					if (value.getData().length > 0) {
 						results.add(webURLBinding.entryToObject(value));
 						matches++;

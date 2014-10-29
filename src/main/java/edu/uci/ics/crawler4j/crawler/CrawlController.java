@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The controller that manages a crawling session. This class creates the
- * crawler threads and monitors their progress.
+ * The controller that manages a crawling session.
+ * This class creates the crawler threads and monitors their progress.
  * 
  * @author Yasser Ganjisaffar <lastname at gmail dot com>
  */
@@ -72,11 +72,13 @@ public class CrawlController extends Configurable {
 
 	protected final Object waitingLock = new Object();
 
-	public CrawlController(CrawlConfig config, PageFetcher pageFetcher, RobotstxtServer robotstxtServer)
-			throws Exception {
+	public CrawlController(CrawlConfig config,
+                           PageFetcher pageFetcher,
+                           RobotstxtServer robotstxtServer) throws Exception {
 		super(config);
 
 		config.validate();
+
 		File folder = new File(config.getCrawlStorageFolder());
 		if (!folder.exists()) {
 			if (!folder.mkdirs()) {

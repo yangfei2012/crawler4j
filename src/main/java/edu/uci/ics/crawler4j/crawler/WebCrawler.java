@@ -50,9 +50,10 @@ public class WebCrawler implements Runnable {
 	protected int myId;
 
 	/**
-	 * The controller instance that has created this crawler thread. This
-	 * reference to the controller can be used for getting configurations of the
-	 * current crawl or adding new seeds during runtime.
+	 * The controller instance that has created this crawler thread.
+     * This reference to the controller can be used for
+     * getting configurations of the current crawl or
+     * adding new seeds during runtime.
 	 */
 	protected CrawlController myController;
 
@@ -62,27 +63,26 @@ public class WebCrawler implements Runnable {
 	private Thread myThread;
 
 	/**
-	 * The parser that is used by this crawler instance to parse the content of
-	 * the fetched pages.
+	 * The parser that is used by this crawler instance to
+     * parse the content of the fetched pages.
 	 */
 	private Parser parser;
 
 	/**
-	 * The fetcher that is used by this crawler instance to fetch the content of
-	 * pages from the web.
+	 * The fetcher that is used by this crawler instance to
+     * fetch the content of pages from the web.
 	 */
 	private PageFetcher pageFetcher;
 
 	/**
 	 * The RobotstxtServer instance that is used by this crawler instance to
-	 * determine whether the crawler is allowed to crawl the content of each
-	 * page.
+	 * determine whether the crawler is allowed to crawl the content of each page.
 	 */
 	private RobotstxtServer robotstxtServer;
 
 	/**
-	 * The DocIDServer that is used by this crawler instance to map each URL to
-	 * a unique docid.
+	 * The DocIDServer that is used by this crawler instance to
+     * map each URL to a unique docid.
 	 */
 	private DocIDServer docIdServer;
 
@@ -92,10 +92,10 @@ public class WebCrawler implements Runnable {
 	private Frontier frontier;
 
 	/**
-	 * Is the current crawler instance waiting for new URLs? This field is
-	 * mainly used by the controller to detect whether all of the crawler
-	 * instances are waiting for new URLs and therefore there is no more work
-	 * and crawling can be stopped.
+	 * Is the current crawler instance waiting for new URLs?
+     * This field is mainly used by the controller to detect
+     * whether all of the crawler instances are waiting for new URLs and
+     * therefore there is no more work and crawling can be stopped.
 	 */
 	private boolean isWaitingForNewURLs;
 
@@ -132,36 +132,35 @@ public class WebCrawler implements Runnable {
 	}
 
 	/**
-	 * This function is called just before starting the crawl by this crawler
-	 * instance. It can be used for setting up the data structures or
-	 * initializations needed by this crawler instance.
+	 * This function is called just before starting the crawl by this crawler instance.
+     * (It can be used for setting up the data structures or
+	 * initializations needed by this crawler instance.)
 	 */
 	public void onStart() {
 	}
 
 	/**
-	 * This function is called just before the termination of the current
-	 * crawler instance. It can be used for persisting in-memory data or other
-	 * finalization tasks.
+	 * This function is called just before the termination of the current crawler instance.
+     * (It can be used for persisting in-memory data or other finalization tasks.)
 	 */
 	public void onBeforeExit() {
 	}
 	
 	/**
 	 * This function is called once the header of a page is fetched.
-	 * It can be overwritten by sub-classes to perform custom logic
-	 * for different status codes. For example, 404 pages can be logged, etc.
+	 * (It can be overwritten by sub-classes to perform custom logic
+	 * for different status codes. For example, 404 pages can be logged, etc.)
 	 */
 	protected void handlePageStatusCode(WebURL webUrl, int statusCode, String statusDescription) {
 	}
 
 	/**
 	 * The CrawlController instance that has created this crawler instance will
-	 * call this function just before terminating this crawler thread. Classes
-	 * that extend WebCrawler can override this function to pass their local
+	 * call this function just before terminating this crawler thread.
+     * (Classes that extend WebCrawler can override this function to pass their local
 	 * data to their controller. The controller then puts these local data in a
 	 * List that can then be used for processing the local data of crawlers (if
-	 * needed).
+	 * needed).)
 	 */
 	public Object getMyLocalData() {
 		return null;
@@ -199,9 +198,9 @@ public class WebCrawler implements Runnable {
 	}
 
 	/**
-	 * Classes that extends WebCrawler can overwrite this function to tell the
-	 * crawler whether the given url should be crawled or not. The following
-	 * implementation indicates that all urls should be included in the crawl.
+	 * Classes that extends WebCrawler can overwrite this function to
+     * tell the crawler whether the given url should be crawled or not.
+     * The following implementation indicates that all urls should be included in the crawl.
 	 * 
 	 * @param url
 	 *            the url which we are interested to know whether it should be
@@ -214,8 +213,8 @@ public class WebCrawler implements Runnable {
 	}
 
 	/**
-	 * Classes that extends WebCrawler can overwrite this function to process
-	 * the content of the fetched and parsed page.
+	 * Classes that extends WebCrawler can overwrite this function to
+     * process the content of the fetched and parsed page.
 	 * 
 	 * @param page
 	 *            the page object that is just fetched and parsed.
@@ -231,7 +230,9 @@ public class WebCrawler implements Runnable {
 		try {
 			fetchResult = pageFetcher.fetchHeader(curURL);
 			int statusCode = fetchResult.getStatusCode();
+
 			handlePageStatusCode(curURL, statusCode, CustomFetchStatus.getStatusDescription(statusCode));
+
 			if (statusCode != HttpStatus.SC_OK) {
 				if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 					if (myController.getConfig().isFollowRedirects()) {

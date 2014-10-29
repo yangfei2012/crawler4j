@@ -29,6 +29,9 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class BasicCrawlController {
 
 	public static void main(String[] args) throws Exception {
+
+        args = new String[]{"/home/fei/Download/tp", "2"};
+
 		if (args.length != 2) {
 			System.out.println("Needed parameters: ");
 			System.out.println("\t rootFolder (it will contain intermediate crawl data)");
@@ -49,27 +52,22 @@ public class BasicCrawlController {
 		int numberOfCrawlers = Integer.parseInt(args[1]);
 
 		CrawlConfig config = new CrawlConfig();
-
 		config.setCrawlStorageFolder(crawlStorageFolder);
-
 		/*
 		 * Be polite: Make sure that we don't send more than 1 request per
 		 * second (1000 milliseconds between requests).
 		 */
 		config.setPolitenessDelay(1000);
-
 		/*
 		 * You can set the maximum crawl depth here. The default value is -1 for
 		 * unlimited depth
 		 */
-		config.setMaxDepthOfCrawling(2);
-
+		config.setMaxDepthOfCrawling(1);
 		/*
 		 * You can set the maximum number of pages to crawl. The default value
 		 * is -1 for unlimited number of pages
 		 */
 		config.setMaxPagesToFetch(1000);
-
 		/*
 		 * Do you need to set a proxy? If so, you can use:
 		 * config.setProxyHost("proxyserver.example.com");
@@ -101,10 +99,10 @@ public class BasicCrawlController {
 		 * URLs that are fetched and then the crawler starts following links
 		 * which are found in these pages
 		 */
-
-		controller.addSeed("http://www.ics.uci.edu/");
-		controller.addSeed("http://www.ics.uci.edu/~lopes/");
-		controller.addSeed("http://www.ics.uci.edu/~welling/");
+        controller.addSeed("http://www.cnblogs.com/aricyang/archive/2013/04/12/3017371.html");
+		//controller.addSeed("http://www.ics.uci.edu/");
+		//controller.addSeed("http://www.ics.uci.edu/~lopes/");
+		//controller.addSeed("http://www.ics.uci.edu/~welling/");
 
 		/*
 		 * Start the crawl. This is a blocking operation, meaning that your code
