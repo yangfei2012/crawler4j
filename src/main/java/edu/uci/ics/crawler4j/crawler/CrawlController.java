@@ -147,7 +147,7 @@ public class CrawlController extends Configurable {
 			final List<Thread> threads = new ArrayList<Thread>();
 			final List<T> crawlers = new ArrayList<T>();
 
-			for (int i = 1; i <= numberOfCrawlers; i++) {
+			for (int i=1; i <= numberOfCrawlers; i++) {
 				T crawler = _c.newInstance();
 				Thread thread = new Thread(crawler, "Crawler " + i);
 				crawler.setThread(thread);
@@ -190,9 +190,7 @@ public class CrawlController extends Configurable {
 									}
 								}
 								if (!someoneIsWorking) {
-									// Make sure again that none of the threads
-									// are
-									// alive.
+									// Make sure again that none of the threads are alive.
 									logger.info("It looks like no thread is working, waiting for 10 seconds to make sure...");
 									sleep(10);
 

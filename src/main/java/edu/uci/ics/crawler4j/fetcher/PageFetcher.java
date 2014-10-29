@@ -115,8 +115,7 @@ public class PageFetcher extends Configurable {
         httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
 
             @Override
-            public void process(final HttpResponse response, final HttpContext context) throws HttpException,
-                    IOException {
+            public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
                 HttpEntity entity = response.getEntity();
                 Header contentEncoding = entity.getContentEncoding();
                 if (contentEncoding != null) {
