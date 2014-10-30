@@ -23,6 +23,8 @@ import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
 
 /**
+ * 如果你需要给WebURL添加一些属性，比如锚的标签名是a,img还是iframe，除了要在WebURL里面添加外，
+ * 也需要修改WebURLTupleBinding，否则不会被存入DB，线程取出的时候该属性就会为空！
  * @author Yasser Ganjisaffar <lastname at gmail dot com>
  */
 
@@ -42,6 +44,11 @@ public class WebURL implements Serializable {
 	private String subDomain;
 	private String path;
 	private String anchor;
+
+    // TODO 未验证
+    // 关于优先级，crawler4j有个小BUG，
+    // 就是WebURL的priority属性默认就是最小0，
+    // 这使得如果你想优先爬取某URL就不可能了，解决方法是在WebURL构造函数或setURL里为priority赋上默认值，
 	private byte priority;
 
 	/**

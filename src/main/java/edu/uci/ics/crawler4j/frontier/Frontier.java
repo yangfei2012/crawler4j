@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 /**
+ * 爬虫存储和分配URL
  * @author Yasser Ganjisaffar <lastname at gmail dot com>
  */
 
@@ -35,6 +36,7 @@ public class Frontier extends Configurable {
 
 	protected static final Logger logger = Logger.getLogger(Frontier.class.getName());
 
+    // 保存当前已发现的但是又还没有分配给爬虫线程的WebURL
 	protected WorkQueues workQueues;
 
 	protected InProcessPagesDB inProcessPages;

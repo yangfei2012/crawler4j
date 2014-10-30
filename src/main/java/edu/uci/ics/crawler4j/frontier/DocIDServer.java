@@ -84,6 +84,13 @@ public class DocIDServer extends Configurable {
 		}
 	}
 
+    /**
+     * 自动生成新ID
+     * newDocId = lastDocID++
+     * in BDB:
+     *      key --> url
+     *      value --> newDocId
+     */
 	public int getNewDocID(String url) {
 		synchronized (mutex) {
 			try {
@@ -94,7 +101,8 @@ public class DocIDServer extends Configurable {
 				}
 
 				lastDocID++;
-				docIDsDB.put(null, new DatabaseEntry(url.getBytes()), new DatabaseEntry(Util.int2ByteArray(lastDocID)));
+				docIDsDB.put(null, new DatabaseEntry(url.getBytes()),
+                                   new DatabaseEntry(Util.int2ByteArray(lastDocID)));
 				return lastDocID;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -102,7 +110,10 @@ public class DocIDServer extends Configurable {
 			return -1;
 		}
 	}
-	
+
+    /**
+     * 手动指定ID
+     */
 	public void addUrlAndDocId(String url, int docId) throws Exception {
 		synchronized (mutex) {
 			if (docId <= lastDocID) {
