@@ -51,6 +51,7 @@ public class Parser extends Configurable {
 
 	public boolean parse(Page page, String contextURL) {
 
+        // if page content contain "binary"/"test" content
 		if (Util.hasBinaryContent(page.getContentType())) {
 			if (!config.isIncludeBinaryContentInCrawling()) {
 				return false;
@@ -69,6 +70,8 @@ public class Parser extends Configurable {
 			}
 			return false;
 		}
+
+        // below is "Html" content
 
 		Metadata metadata = new Metadata();
 		HtmlContentHandler contentHandler = new HtmlContentHandler();
@@ -92,6 +95,7 @@ public class Parser extends Configurable {
 			page.setContentCharset(metadata.get("Content-Encoding"));
 		}
 
+        // create "Html-ParseData" and populate the parsed data
 		HtmlParseData parseData = new HtmlParseData();
 		parseData.setText(contentHandler.getBodyText().trim());
 		parseData.setTitle(metadata.get(Metadata.TITLE));
@@ -142,6 +146,7 @@ public class Parser extends Configurable {
 			return false;
 		}
 
+        // set to "page"
 		page.setParseData(parseData);
 		return true;
 

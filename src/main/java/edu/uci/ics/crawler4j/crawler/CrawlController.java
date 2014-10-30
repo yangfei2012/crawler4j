@@ -147,13 +147,14 @@ public class CrawlController extends Configurable {
 			final List<Thread> threads = new ArrayList<Thread>();
 			final List<T> crawlers = new ArrayList<T>();
 
+            // run all crawlers
 			for (int i=1; i<=numberOfCrawlers; i++) {
 				T crawler = _c.newInstance();
 				Thread thread = new Thread(crawler, "Crawler " + i);
 				crawler.setThread(thread);
-				crawler.init(i, this);
+				crawler.init(i, this); // TODO: 这里注意传入了整个CrawController
 
-				thread.start();
+				thread.start(); // crawler run!!!!
 
 				crawlers.add(crawler);
 				threads.add(thread);
@@ -162,8 +163,8 @@ public class CrawlController extends Configurable {
 
 			final CrawlController controller = this;
 
+            // run threads monitor
 			Thread monitorThread = new Thread(new Runnable() {
-
 				@Override
 				public void run() {
 					try {
@@ -174,6 +175,7 @@ public class CrawlController extends Configurable {
 								boolean someoneIsWorking = false;
 								for (int i = 0; i < threads.size(); i++) {
 									Thread thread = threads.get(i);
+                                    // not alive
 									if (!thread.isAlive()) {
 										if (!shuttingDown) {
 											logger.info("Thread " + i + " was dead, I'll recreate it.");
@@ -187,15 +189,16 @@ public class CrawlController extends Configurable {
 											crawlers.remove(i);
 											crawlers.add(i, crawler);
 										}
+                                    // not waiting for new urls
 									} else if (crawlers.get(i).isNotWaitingForNewURLs()) {
 										someoneIsWorking = true;
 									}
 								}
 								if (!someoneIsWorking) {
 									// Make sure again that none of the threads are alive.
+                                    // wait for 10s
 									logger.info("It looks like no thread is working, waiting for 10 seconds to make sure...");
 									sleep(10);
-
 									someoneIsWorking = false;
 									for (int i = 0; i < threads.size(); i++) {
 										Thread thread = threads.get(i);
@@ -204,6 +207,7 @@ public class CrawlController extends Configurable {
 										}
 									}
 									if (!someoneIsWorking) {
+                                        // check if has some working threads
 										if (!shuttingDown) {
 											long queueLength = frontier.getQueueLength();
 											if (queueLength > 0) {
@@ -218,10 +222,8 @@ public class CrawlController extends Configurable {
 										}
 
 										logger.info("All of the crawlers are stopped. Finishing the process...");
-										// At this step, frontier notifies the
-										// threads that were
-										// waiting for new URLs and they should
-										// stop
+										// At this step, frontier notifies the threads
+										// that were waiting for new URLs and they should stop
 										frontier.finish();
 										for (T crawler : crawlers) {
 											crawler.onBeforeExit();
@@ -248,8 +250,7 @@ public class CrawlController extends Configurable {
 					}
 				}
 			});
-
-			monitorThread.start();
+			monitorThread.start(); // run monitor thread
 
 			if (isBlocking) {
 				waitUntilFinish();

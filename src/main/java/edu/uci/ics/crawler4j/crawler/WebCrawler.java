@@ -159,13 +159,15 @@ public class WebCrawler implements Runnable {
 	 * call this function just before terminating this crawler thread.
      * (Classes that extend WebCrawler can override this function to pass their local
 	 * data to their controller. The controller then puts these local data in a
-	 * List that can then be used for processing the local data of crawlers (if
-	 * needed).)
+	 * List that can then be used for processing the local data of crawlers (if needed).)
 	 */
 	public Object getMyLocalData() {
 		return null;
 	}
 
+    /**
+     * loop: get the url and process
+     */
 	public void run() {
 		onStart();
 		while (true) {
@@ -228,11 +230,13 @@ public class WebCrawler implements Runnable {
 		}
 		PageFetchResult fetchResult = null;
 		try {
+            // get the url's page content
 			fetchResult = pageFetcher.fetchHeader(curURL);
 			int statusCode = fetchResult.getStatusCode();
 
 			handlePageStatusCode(curURL, statusCode, CustomFetchStatus.getStatusDescription(statusCode));
 
+            // handle bad result
 			if (statusCode != HttpStatus.SC_OK) {
 				if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 					if (myController.getConfig().isFollowRedirects()) {
@@ -263,6 +267,7 @@ public class WebCrawler implements Runnable {
 				return;
 			}
 
+            // parse the url fetch result if the status is OK
 			if (!curURL.getURL().equals(fetchResult.getFetchedUrl())) {
 				if (docIdServer.isSeenBefore(fetchResult.getFetchedUrl())) {
 					// Redirect page is already seen
@@ -274,11 +279,12 @@ public class WebCrawler implements Runnable {
 
 			Page page = new Page(curURL);
 			int docid = curURL.getDocid();
-			if (fetchResult.fetchContent(page) && parser.parse(page, curURL.getURL())) {
+			if (fetchResult.fetchContent(page) && parser.parse(page, curURL.getURL())) { // parse the page and populate the parsed data
 				ParseData parseData = page.getParseData();
 				if (parseData instanceof HtmlParseData) {
 					HtmlParseData htmlParseData = (HtmlParseData) parseData;
 
+                    // 检测当前页是否有外链接，若有，则schedule之
 					List<WebURL> toSchedule = new ArrayList<WebURL>();
 					int maxCrawlDepth = myController.getConfig().getMaxDepthOfCrawling();
 					for (WebURL webURL : htmlParseData.getOutgoingUrls()) {
@@ -304,6 +310,7 @@ public class WebCrawler implements Runnable {
 					}
 					frontier.scheduleAll(toSchedule);
 				}
+                // custom visit page policy
 				visit(page);
 			}
 		} catch (Exception e) {
